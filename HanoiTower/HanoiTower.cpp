@@ -4,18 +4,51 @@
 #include "pch.h"
 #include <iostream>
 
+class HanoiTower
+{
+private:
+    uint16_t totalLevel = 0;
+    const char* pillarName[3] = { "A", "B", "C" };
+    enum Pillar
+    {
+        A = 0,
+        B,
+        C
+    };
+    int howToMove(uint16_t level, Pillar from, Pillar to, Pillar by)
+    {
+        if (level == 1)
+        {
+            showStep(from, to);
+            return 1;
+        }
+        int stepCount = 0;
+        if (level > 1)
+        {
+            stepCount += howToMove(level - 1, from, by, to);
+            stepCount += howToMove(1, from, to, by);
+            return stepCount + howToMove(level - 1, by, to, from);
+        }
+        return 0;
+    }
+
+    void showStep(Pillar from, Pillar to)
+    {
+        std::cout << pillarName[from] << "->" << pillarName[to] << std::endl;
+    }
+public:
+    HanoiTower(uint16_t level)
+        : totalLevel(level) {}
+    int showSteps()
+    {
+        return howToMove(totalLevel, A, B, C);
+    }
+};
+
 int main()
 {
-    std::cout << "Hello World!\n"; 
+    HanoiTower t(4);
+    int steps = t.showSteps();
+    std::cout << "Total steps: " << steps << std::endl;
+    return 0;
 }
-
-// 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
-// 调试程序: F5 或调试 >“开始调试”菜单
-
-// 入门提示: 
-//   1. 使用解决方案资源管理器窗口添加/管理文件
-//   2. 使用团队资源管理器窗口连接到源代码管理
-//   3. 使用输出窗口查看生成输出和其他消息
-//   4. 使用错误列表窗口查看错误
-//   5. 转到“项目”>“添加新项”以创建新的代码文件，或转到“项目”>“添加现有项”以将现有代码文件添加到项目
-//   6. 将来，若要再次打开此项目，请转到“文件”>“打开”>“项目”并选择 .sln 文件
